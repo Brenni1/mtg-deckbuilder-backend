@@ -15,10 +15,24 @@ const app = express();
 require("./config")(app);
 
 // 👇 Start handling routes here
-const indexRoutes = require("./routes/index.routes");
-app.use("/api", indexRoutes);
+const userRoutes = require("./routes/user.routes");
+app.use("/user", userRoutes);
+
+const authRoutes = require("./routes/auth.routes");
+app.use("/auth", authRoutes);
 
 // ❗ To handle errors. Routes that don't exist or errors that you handle in specific routes
 require("./error-handling")(app);
+
+const PORT = process.env.PORT || 5005;
+
+app.use(express.json());
+
+app.use(express.static("public"));
+app.use(express.urlencoded({ extended: false }));
+
+// app.listen(PORT, () => {
+//   console.log(`Server listening on port ${PORT}`);
+// });
 
 module.exports = app;
