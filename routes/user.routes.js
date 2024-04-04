@@ -53,7 +53,54 @@ router.get("/:id", isAuthenticated, async (req, res) => {
   }
 });
 
+// updating a User
+
+router.put("/:userId", async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const updatedUser = await UserModel.findByIdAndUpdate(userId, req.body, {
+      new: true,
+    });
+    if (!updatedUser) {
+      res.status(500).json({ errorMessage: "User not found" });
+    } else {
+      res.status(200).json({ message: "User updated successfully", updatedUser });
+    }
+  } catch (error) {
+    res.status(500).json({ errorMessage: "User not found", error });
+  }
+});
+
 /////// DECK ROUTES FROM HERE //////////
+
+//search for a Card
+
+router.get("/card/search", async (req, res) => {
+  const searchTerm = req.query.q; // Extract the search term from the query parameter
+
+  try {
+    // Check if the searchTerm is a number
+    const isNumber = !isNaN(parseFloat(searchTerm));
+
+    let query;
+    if (isNumber) {
+      query = { cmc: searchTerm };
+    } else {
+      query = { name: { $regex: searchTerm, $options: "i" } };
+    }
+
+    const results = await CardModel.find(query);
+
+    if (results.length === 0) {
+      return res.status(404).json({ message: "No results found" });
+    }
+
+    res.json(results);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json(err);
+  }
+});
 
 // create a new Deck
 
@@ -99,24 +146,6 @@ router.put("/deck/:deckId", async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({ errorMessage: "Deck not found", error });
-  }
-});
-
-// updating a User
-
-router.put("/user/:userId", async (req, res) => {
-  const { userId } = req.params;
-  try {
-    const updatedUser = await UserModel.findByIdAndUpdate(userId, req.body, {
-      new: true,
-    });
-    if (!updatedUser) {
-      res.status(500).json({ errorMessage: "User not found" });
-    } else {
-      res.status(200).json({ message: "User updated successfully", updatedUser });
-    }
-  } catch (error) {
-    res.status(500).json({ errorMessage: "User not found", error });
   }
 });
 
