@@ -60,7 +60,7 @@ router.post("/login", async (req, res) => {
     } else {
       const doesPasswordMatch = bcryptjs.compareSync(password, foundUser.password);
       if (!doesPasswordMatch) {
-        res.status(400).json({ message: "Incorrect password!" });
+        res.status(400).json({ message: "Incorrect password!", password });
       } else {
         //***************JWT token **************/
         const { _id, name } = foundUser;

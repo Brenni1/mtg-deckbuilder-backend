@@ -9,16 +9,16 @@ const { isAuthenticated } = require("../middleware/jwt.middleware");
 
 // create a new User
 
-router.post("/", (req, res) => {
-  UserModel.create(req.body)
-    .then((newUser) => {
-      res.status(201).json(newUser);
-    })
-    .catch((err) => {
-      console.log(err);
-      res.status(500).json(err);
-    });
-});
+// router.post("/", (req, res) => {
+//   UserModel.create(req.body)
+//     .then((newUser) => {
+//       res.status(201).json(newUser);
+//     })
+//     .catch((err) => {
+//       console.log(err);
+//       res.status(500).json(err);
+//     });
+// });
 
 // delete a User
 
@@ -37,7 +37,7 @@ router.delete("/:userId", (req, res) => {
     });
 });
 
-// check if the User is authenticated and exists
+// check if the User is authenticated
 router.get("/:id", isAuthenticated, async (req, res) => {
   try {
     const userId = req.params.id;
