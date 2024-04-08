@@ -22,21 +22,6 @@ const { isAuthenticated } = require("../middleware/jwt.middleware");
 
 // delete a User
 
-router.delete("/:userId", (req, res) => {
-  UserModel.findByIdAndDelete(req.params.userId)
-    .then((deletedUser) => {
-      console.log(req.params.userId);
-      if (!deletedUser) {
-        res.status(500).json({ message: "Something bad happened while deleting user" });
-      } else {
-        res.status(204).send();
-      }
-    })
-    .catch((error) => {
-      res.status(500).json({ message: "Something bad happened while deleting user", error });
-    });
-});
-
 // check if the User is authenticated
 router.get("/:id", isAuthenticated, async (req, res) => {
   try {
@@ -69,6 +54,37 @@ router.put("/:userId", async (req, res) => {
   } catch (error) {
     res.status(500).json({ errorMessage: "User not found", error });
   }
+});
+
+// get the User and populate his Profile with his Decks
+
+router.get("/:id", (req, res) => {
+  console.log("This is the reqparams", req.params.userId);
+  UserModel.findById(req.params.userId)
+    .populate("decks")
+    .then((oneUserModel) => {
+      console.log(oneUserModel, req.params.userId);
+      res.status(200).json(oneUserModel);
+    })
+    .catch((error) => {
+      res.status(500).json({ message: "Error while finding the User", error });
+      console.log(error);
+    });
+});
+
+router.delete("/:userId", (req, res) => {
+  UserModel.findByIdAndDelete(req.params.userId)
+    .then((deletedUser) => {
+      console.log(req.params.userId);
+      if (!deletedUser) {
+        res.status(500).json({ message: "Something bad happened while deleting user" });
+      } else {
+        res.status(204).send();
+      }
+    })
+    .catch((error) => {
+      res.status(500).json({ message: "Something bad happened while deleting user", error });
+    });
 });
 
 /////// DECK ROUTES FROM HERE //////////

@@ -63,8 +63,8 @@ router.post("/login", async (req, res) => {
         res.status(400).json({ message: "Incorrect password!", password });
       } else {
         //***************JWT token **************/
-        const { _id, name } = foundUser;
-        const payload = { _id, name };
+        const { _id, name, decks } = foundUser;
+        const payload = { _id, name, decks };
         // ************** creating token *******
         const authToken = jwt.sign(payload, process.env.TOKEN_SECRET, {
           algorithm: "HS256",
