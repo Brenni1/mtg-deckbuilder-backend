@@ -167,19 +167,24 @@ router.put("/deck/:deckId", async (req, res) => {
 
 // deleting a Deck
 
-router.delete("/deck/:deckId", (req, res) => {
-  DeckModel.findByIdAndDelete(req.params.deckId)
-    .then((deletedDeck) => {
-      console.log(req.params.deckId);
-      if (!deletedDeck) {
-        res.status(500).json({ message: "Something bad happened while deleting the Deck" });
-      } else {
-        res.status(204).send();
-      }
-    })
-    .catch((error) => {
-      res.status(500).json({ message: "Something bad happened while deleting the Deck", error });
-    });
+router.delete("/deck/:deckId", async (req, res) => {
+  try {
+    const deletedDeck = await DeckModel.findByIdAndDelete(req.params.deckId);
+
+    if (!deletedDeck) {
+      return res.status(500).json({ message: "Something bad happened while deleting the Deck" });
+    }
+
+    const updatedUser = await UserModel.findByIdAndUpdate(deletedDeck.user, { $pull: { decks: deletedDeck._id } }, { new: true });
+    console.log("This is the updatedUser", updatedUser);
+    if (!updatedUser) {
+      return res.status(500).json({ message: "Failed to update user model after deleting deck", deletedDeck });
+    }
+    // return res.status(204).send(updatedUser);
+    return res.status(204).json(updatedUser);
+  } catch (error) {
+    return res.status(500).json({ message: "Something bad happened while deleting the Deck", error });
+  }
 });
 
 // create a new Card
