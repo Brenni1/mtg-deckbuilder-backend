@@ -23,9 +23,9 @@ const { isAuthenticated } = require("../middleware/jwt.middleware");
 // delete a User
 
 // check if the User is authenticated
-router.get("/:id", isAuthenticated, async (req, res) => {
+router.get("/:userId", isAuthenticated, async (req, res) => {
   try {
-    const userId = req.params.id;
+    const userId = req.params.userId;
     const user = await UserModel.findById(userId);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -58,8 +58,8 @@ router.put("/:userId", async (req, res) => {
 
 // get the User and populate his Profile with his Decks
 
-router.get("/:id", (req, res) => {
-  console.log("This is the reqparams", req.params.userId);
+router.get("/populate/:userId", (req, res) => {
+  console.log("This is the reqparams from getting a User and populating his Profile with Decks", req.params.userId);
   UserModel.findById(req.params.userId)
     .populate("decks")
     .then((oneUserModel) => {
@@ -118,6 +118,21 @@ router.get("/card/search", async (req, res) => {
   }
 });
 
+// show details about a specific Card
+
+router.get("/card/:id", (req, res) => {
+  console.log("This is the reqparams from the specific Cardsearch", req.params.cardId);
+  CardModel.findById(req.params.cardId)
+    .then((oneCardModel) => {
+      console.log(oneCardModel, req.params.cardId);
+      res.status(200).json(oneCardModel);
+    })
+    .catch((error) => {
+      res.status(500).json({ message: "Error while finding the Card", error });
+      console.log(error);
+    });
+});
+
 // create a new Deck
 
 router.post("/deck", (req, res) => {
@@ -134,7 +149,7 @@ router.post("/deck", (req, res) => {
 // get the deck of a User and populate it with the Cards
 
 router.get("/deck/:deckId", (req, res) => {
-  console.log("This is the reqparams", req.params.deckId);
+  console.log("This is the reqparams from getting a Deck", req.params.deckId);
   DeckModel.findById(req.params.deckId)
     .populate("cards")
     .then((oneDeckModel) => {
