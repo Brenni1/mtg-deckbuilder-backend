@@ -96,16 +96,16 @@ router.get("/card/search", async (req, res) => {
 
   try {
     // Check if the searchTerm is a number
-    const isNumber = !isNaN(parseFloat(searchTerm));
+    // const isNumber = !isNaN(parseFloat(searchTerm));
 
     let query;
-    if (isNumber) {
-      query = { cmc: searchTerm };
-    } else {
-      query = { name: { $regex: searchTerm, $options: "i" } };
-    }
+    // if (isNumber) {
+    //   query = { cmc: searchTerm };
+    // } else {
+    query = { name: { $regex: searchTerm, $options: "i" } };
+    // }
 
-    const results = await CardModel.find(query);
+    const results = await CardModel.find(query, { name: 1, mana_cost: 1, cmc: 1, type_line: 1, color_identity: 1, image_uris: 1 });
 
     if (results.length === 0) {
       return res.status(404).json({ message: "No results found" });
