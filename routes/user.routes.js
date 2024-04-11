@@ -7,21 +7,6 @@ const DeckModel = require("../models/Deck.model.js");
 const CardModel = require("../models/Card.model.js");
 const { isAuthenticated } = require("../middleware/jwt.middleware");
 
-// create a new User
-
-// router.post("/", (req, res) => {
-//   UserModel.create(req.body)
-//     .then((newUser) => {
-//       res.status(201).json(newUser);
-//     })
-//     .catch((err) => {
-//       console.log(err);
-//       res.status(500).json(err);
-//     });
-// });
-
-// delete a User
-
 // check if the User is authenticated
 router.get("/:userId", isAuthenticated, async (req, res) => {
   try {
@@ -62,8 +47,9 @@ router.get("/populate/:userId", (req, res) => {
   console.log("This is the reqparams from getting a User and populating his Profile with Decks", req.params.userId);
   UserModel.findById(req.params.userId)
     .populate("decks")
+    .select("-password")
     .then((oneUserModel) => {
-      console.log(oneUserModel, req.params.userId);
+      console.log(req.params.userId);
       res.status(200).json(oneUserModel);
     })
     .catch((error) => {
