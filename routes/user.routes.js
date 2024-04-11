@@ -120,7 +120,7 @@ router.get("/card/search", async (req, res) => {
 
 // show details about a specific Card
 
-router.get("/card/:id", (req, res) => {
+router.get("/card/:cardId", (req, res) => {
   console.log("This is the reqparams from the specific Cardsearch", req.params.cardId);
   CardModel.findById(req.params.cardId)
     .then((oneCardModel) => {
@@ -153,7 +153,6 @@ router.get("/deck/:deckId", (req, res) => {
   DeckModel.findById(req.params.deckId)
     .populate("cards")
     .then((oneDeckModel) => {
-      console.log(oneDeckModel, req.params.deckId);
       res.status(200).json(oneDeckModel);
     })
     .catch((error) => {

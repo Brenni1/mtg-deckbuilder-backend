@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const cardArray = require("../../oracle-cards-20240402090156.json");
 const CardModel = require("./models/Card.model.js");
 
-//define MONGO_URI in .env
+//use MONGO_URI for local or MONGO_URI_ONLINE for online DB
 mongoose
   .connect(MONGO_URI)
   .then((x) => {
